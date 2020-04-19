@@ -1,6 +1,4 @@
 import torch
-from operator import mul as multiplicator
-from functools import reduce
 
 
 def get_device():

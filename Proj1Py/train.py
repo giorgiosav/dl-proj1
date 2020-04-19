@@ -23,7 +23,7 @@ def train_basic_model(model, train_loader, criterion, epochs, eta,
                 with torch.no_grad(): loss_sum_train += loss
 
         if get_losses:
-            losses['train'].append(loss_sum_train / len(train_loader))
+            losses['train'].append(loss_sum_train / (len(test_loader.dataset)/test_loader.batch_size))
 
             with torch.no_grad():
                 acc['train'].append(compute_accuracy_basic(model, train_loader))
@@ -48,7 +48,7 @@ def compute_accuracy_basic(model, data_loader):
             pred = r.max(0)[1].item()
             if (target_data[i]) != pred:
                 tot_err += 1
-    return 1 - tot_err / (len(data_loader) * data_loader.batch_size)
+    return 1 - tot_err / (len(data_loader.dataset))
 
 
 def compute_losses_test_basic(model, test_loader, criterion):
@@ -59,4 +59,4 @@ def compute_losses_test_basic(model, test_loader, criterion):
             loss = criterion(output, target_data)
             loss_sum_test += loss
 
-    return loss_sum_test / len(test_loader)
+    return loss_sum_test / (len(test_loader.dataset)/test_loader.batch_size)
