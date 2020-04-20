@@ -1,4 +1,4 @@
-import dlc_practical_prologue as plg
+from dlc_practical_prologue import generate_pair_sets
 import torch
 from torch.utils.data import DataLoader, Dataset
 from helpers import *
@@ -29,7 +29,7 @@ class MNISTCompareDataset(Dataset):
 
 
 def get_data(N=1000, batch_size=100, shuffle=True):
-    train_input, train_target, train_classes, test_input, test_target, test_classes = plg.generate_pair_sets(N)
+    train_input, train_target, train_classes, test_input, test_target, test_classes = generate_pair_sets(N)
     device = get_device()
 
     # Normalization
