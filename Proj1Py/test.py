@@ -10,6 +10,8 @@ import argparse
 
 def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     print("Starting the train/test phase over {} runs".format(n_runs))
+    if plots:
+        print("Training model saving losses/accuracy at each epochs, this will require more time...")
     device = get_device()
     criterion = nn.CrossEntropyLoss().to(device)
     epochs = best_params["epochs"]
@@ -36,9 +38,8 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             optim = "Adam"
             nesterov = None
             momentum = None
-
+        print("Training model {}...".format(i))
         if plots:
-            print("Training model {} with intermediary losses, this will require more time...".format(i))
             if model_name == "Baseline":
                 loss, acc = train_basic_model(model, train_loader, criterion, epochs, eta,
                                               optim=optim, momentum=momentum, nesterov=nesterov,
@@ -50,7 +51,6 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             loss_tot.append(loss)
             acc_tot.append(acc)
         else:
-            print("Training model {}...".format(i))
             if model_name == "Baseline":
                 train_basic_model(model, train_loader, criterion, epochs, eta,
                                   optim=optim, momentum=momentum, nesterov=nesterov)
@@ -63,21 +63,22 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         acc_test.append(compute_accuracy(model, test_loader, model_name))
         del model
 
-    print("------------------------------------------")
-
     if plots:
-        print("Saving requested plots for loss and accuracy")
-        plot_over_epochs(loss_tot, epochs, "Loss", "losstot_" + model_name + "_sgd" if sgd else "")
-        plot_over_epochs(acc_tot, epochs, "Accuracy", "acc_" + model_name + "_sgd" if sgd else "")
-    else:
-        mean_acc_train = torch.mean(torch.Tensor(acc_train))
-        mean_acc_test = torch.mean(torch.Tensor(acc_test))
-        var_acc_train = torch.std(torch.Tensor(acc_train))
-        var_acc_test = torch.std(torch.Tensor(acc_test))
         print("------------------------------------------")
-        print("Final accuracy and standard deviation on train and test:")
-        print("Train -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_train, var_acc_train))
-        print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
+        print("Saving requested plots for loss and accuracy")
+        loss_save = "losstot_{model}_{n}runs{sgd}".format(model=model_name, n=n_runs, sgd="_sgd" if sgd else "")
+        acc_save = "acc_{model}_{n}runs{sgd}".format(model=model_name, n=n_runs, sgd="_sgd" if sgd else "")
+        plot_over_epochs(loss_tot, epochs, "Loss", loss_save)
+        plot_over_epochs(acc_tot, epochs, "Accuracy", acc_save)
+
+    mean_acc_train = torch.mean(torch.Tensor(acc_train))
+    mean_acc_test = torch.mean(torch.Tensor(acc_test))
+    var_acc_train = torch.std(torch.Tensor(acc_train))
+    var_acc_test = torch.std(torch.Tensor(acc_test))
+    print("------------------------------------------")
+    print("Final accuracy and standard deviation on train and test:")
+    print("Train -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_train, var_acc_train))
+    print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
 
     return
 
