@@ -45,7 +45,7 @@ class SiameseNet(nn.Module):
         self.features.add_module("maxpool_1", nn.MaxPool2d(kernel_size=2))
         self.features.add_module("conv_2", nn.Conv2d(chan1, chan2, kernel_size=2))
         self.features.add_module("relu_2", nn.ReLU())
-        self.features.add_module("maxpool2", nn.MaxPool2d(kernel_size=2, dilation=1))
+        self.features.add_module("maxpool2", nn.MaxPool2d(kernel_size=2))
         self.features.add_module("conv_3", nn.Conv2d(chan2, chan3, kernel_size=2))
         self.features.add_module("relu_3", nn.ReLU())
 
@@ -95,7 +95,7 @@ class NonSiameseNet(nn.Module):
         self.features1.add_module("maxpool_1", nn.MaxPool2d(kernel_size=2))
         self.features1.add_module("conv_2", nn.Conv2d(chan1, chan2, kernel_size=2))
         self.features1.add_module("relu_2", nn.ReLU())
-        self.features1.add_module("maxpool2", nn.MaxPool2d(kernel_size=2, dilation=1))
+        self.features1.add_module("maxpool2", nn.MaxPool2d(kernel_size=2))
         self.features1.add_module("conv_3", nn.Conv2d(chan2, chan3, kernel_size=2))
         self.features1.add_module("relu_3", nn.ReLU())
 

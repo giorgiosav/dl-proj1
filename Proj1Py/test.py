@@ -37,8 +37,8 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             nesterov = None
             momentum = None
 
-        print("Training model {}...".format(i))
         if plots:
+            print("Training model {} with intermediary losses, this will require more time...".format(i))
             if model_name == "Baseline":
                 loss, acc = train_basic_model(model, train_loader, criterion, epochs, eta,
                                               optim=optim, momentum=momentum, nesterov=nesterov,
@@ -50,6 +50,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             loss_tot.append(loss)
             acc_tot.append(acc)
         else:
+            print("Training model {}...".format(i))
             if model_name == "Baseline":
                 train_basic_model(model, train_loader, criterion, epochs, eta,
                                   optim=optim, momentum=momentum, nesterov=nesterov)
@@ -62,6 +63,8 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         acc_test.append(compute_accuracy(model, test_loader, model_name))
         del model
 
+    print("------------------------------------------")
+
     if plots:
         print("Saving requested plots for loss and accuracy")
         plot_over_epochs(loss_tot, epochs, "Loss", "losstot_" + model_name + "_sgd" if sgd else "")
@@ -71,6 +74,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         mean_acc_test = torch.mean(torch.Tensor(acc_test))
         var_acc_train = torch.std(torch.Tensor(acc_train))
         var_acc_test = torch.std(torch.Tensor(acc_test))
+        print("------------------------------------------")
         print("Final accuracy and standard deviation on train and test:")
         print("Train -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_train, var_acc_train))
         print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
@@ -79,7 +83,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
 
 
 def main(validation, sgd, model_name, plots, n_runs):
-    print("{} model implementation".format(model_name))
+    print("\n{} model implementation".format(model_name))
     print("------------------------------------------")
 
     if validation:
@@ -106,6 +110,7 @@ def main(validation, sgd, model_name, plots, n_runs):
     else:
         print("Loading precomputed best params")
         best_params = get_best_params(model_name)
+    print("------------------------------------------")
 
     test_selected_model(model_name, sgd, plots, best_params, n_runs)
 
