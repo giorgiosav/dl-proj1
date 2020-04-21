@@ -113,8 +113,8 @@ def select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hid
                                             raise Exception("Siamese/NonSiamese selector exception")
                                         criterion = nn.CrossEntropyLoss().to(device)
                                         train_loader, test_loader = get_data()
-                                        train_basic_model(model, train_loader, criterion, epochs, eta, optim="Adam")
-                                        acc = compute_accuracy(model, test_loader)
+                                        train_advanced_models(model, train_loader, criterion, epochs, eta, optim="Adam")
+                                        acc = compute_accuracy(model, test_loader, "Advanced")
                                         tot_acc += acc
                                         del model
                                     acc_run = tot_acc / n_runs
