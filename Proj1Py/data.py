@@ -29,6 +29,12 @@ class MNISTCompareDataset(Dataset):
 
 
 def get_data(N=1000, batch_size=100, shuffle=True):
+    '''
+    Get train and test DataLoaders
+    :param N: (int) number of pairs to return for each data loader
+    :param batch_size: (int) batch size
+    :param shuffle: (bool) activate random shuffling
+    '''
     train_input, train_target, train_classes, test_input, test_target, test_classes = generate_pair_sets(N)
     device = get_device()
 

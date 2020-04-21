@@ -6,6 +6,20 @@ from data import get_data
 
 def select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3,
                            etas, n_runs=10, epochs=25, verbose=False):
+    '''
+    Partial grid search over hyper-parameters for the baseline network, to find 
+    the best combination. This function makes sure that only combinations with 
+    number of channels that increase with depth are tested.
+
+    :param chans: (list) number of channels for each convolution layer (3)
+    :param nb_hidden1: (int) number of hidden units for 1st fully connected layer
+    :param nb_hidden2: (int) number of hidden units for 2nd fully connected layer
+    :param nb_hidden3: (int) number of hidden units for 3rd fully connected layer
+    :param etas: (list) eta values to test 
+    :param n_runs: (int) number of runs over which to average results
+    :param epochs: (int) number of epochs
+    :param verbose: (bool) activate verbose printing
+    '''
     device = get_device()
     best_acc = 0
     best_params = {"eta": 0, "chan1": 0, "chan2": 0, "chan3": 0, "nb_hidden1": 0, "nb_hidden2": 0, "nb_hidden3": 0}
@@ -56,6 +70,23 @@ def select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3,
 
 def select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hidden4,
                                etas, model_sel="Siamese", n_runs=10, epochs=25, verbose=False):
+    '''
+    Partial grid search over hyper-parameters for the siamese and non-siamese networks, to find 
+    the best combination. This function makes sure that only combinations with 
+    number of channels that increase with depth are tested.
+
+    :param chans: (list) number of channels for each convolution layer (3)
+    :param nb_hidden1: (int) number of hidden units for 1st fully connected layer
+    :param nb_hidden2: (int) number of hidden units for 2nd fully connected layer
+    :param nb_hidden3: (int) number of hidden units for 3rd fully connected layer
+    :param nb_hidden4: (int) number of hidden units for 4th fully connected layer
+    :param etas: (list) eta values to test
+    :param model_sel (string): choose which network to run ("Siamese"/"NonSiamese")
+    :param n_runs: (int) number of runs over which to average results
+    :param epochs: (int) number of epochs
+    :param verbose: (bool) activate verbose printing
+    '''
+
     device = get_device()
     best_acc = 0
     best_params = {"eta": 0, "chan1": 0, "chan2": 0, "chan3": 0,

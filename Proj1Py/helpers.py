@@ -10,11 +10,23 @@ def get_device():
 
 
 def get_param_nums(model):
+    '''
+    Get number of parameters in model
+    :param model: (nn.Module) network model
+    :return: (int) number of parameters
+    '''
     params = sum(p.numel() for p in model.parameters())
     return params
 
 
 def get_best_params(model_name, optimizer="Adam", only_epochs=False):
+    '''
+    Get pre-computed best hyper-parameters
+    :param model_name: (string) name of model (Baseline/Siamese/NonSiamese)
+    :param optimizer: (string) optimizer name (Adam/SGD)
+    :param only_epochs: (bool) only return number of epochs
+    :return: dict of parameters, or int if only_epochs=True
+    '''
     if optimizer == "Adam":
         if model_name == "Baseline":
             if not only_epochs:
