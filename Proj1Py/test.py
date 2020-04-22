@@ -15,7 +15,9 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     '''
     print("Starting the train/test phase over {} runs".format(n_runs))
     if plots:
-        print("Training model saving losses/accuracy at each epochs, this will require more time...")
+        print("\nYou chose to produce the plots. \n"
+              "Model will be trained saving losses/accuracy at each epochs, this will require more time.\n"
+              "For this reason, the average training time won't be computed (otherwise the estimate will be biased)\n")
     device = get_device()
     criterion = nn.CrossEntropyLoss().to(device)
     epochs = best_params["epochs"]
