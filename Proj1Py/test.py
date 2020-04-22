@@ -1,8 +1,4 @@
-import torch
-from data import get_data
 from helpers import *
-from models import *
-from train import *
 from validation import *
 from plot import *
 import argparse
@@ -105,14 +101,9 @@ def main(validation, sgd, model_name, plots, n_runs):
         # The grid search is performed over parameters
         # we already found performing better during coarse grained validation
         if not sgd:
-            chans = [32, 64, 128]
-            nb_hidden1 = [75]
-            nb_hidden2 = [75]
-            nb_hidden3 = [100]
-            nb_hidden4 = [10]
-            # nb_hidden1 = nb_hidden2 = nb_hidden3 = nb_hidden4 = [10, 25, 50, 75, 100]
+            chans = [32, 64, 128, 256]
+            nb_hidden1 = nb_hidden2 = nb_hidden3 = nb_hidden4 = [10, 25, 50, 75, 100]
             etas = [0.001, 0.0025, 0.005, 0.0075, 0.01]
-            # etas = [0.0025]
             print("Starting validation algorithm on the chosen model. "
                   "NOTE: this may require up to 10 hours for a complete run")
             if model_name == "Baseline":
