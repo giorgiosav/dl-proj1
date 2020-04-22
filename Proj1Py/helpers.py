@@ -1,7 +1,14 @@
+# -*- coding: utf-8 -*-
+"""General helpers used in the implementation"""
+
 import torch
 
 
 def get_device():
+    """
+    Get the device in which all the tensor will be stored: CPU or CUDA (GPU) device
+    :return: string defining the device
+    """
     if torch.cuda.is_available():
         device = 'cuda'
     else:
@@ -10,23 +17,30 @@ def get_device():
 
 
 def get_param_nums(model):
-    '''
-    Get number of parameters in model
-    :param model: (nn.Module) network model
+    """
+    Get number of parameters in a model
+    :param model: network model
+    :type model: nn.Module
     :return: (int) number of parameters
-    '''
+    """
+    # Compute and return params
     params = sum(p.numel() for p in model.parameters())
     return params
 
 
 def get_best_params(model_name, optimizer="Adam", only_epochs=False):
-    '''
-    Get pre-computed best hyper-parameters
-    :param model_name: (string) name of model (Baseline/Siamese/NonSiamese)
-    :param optimizer: (string) optimizer name (Adam/SGD)
-    :param only_epochs: (bool) only return number of epochs
+    """
+    Get pre-computed best hyper-parameters for a given model and optimizer
+    :param model_name: name of model (Baseline/Siamese/NonSiamese)
+    :type model_name: str
+    :param optimizer: optimizer name (Adam/SGD)
+    :type optimizer: str
+    :param only_epochs:  only return number of epochs
+    :type only_epochs: bool
     :return: dict of parameters, or int if only_epochs=True
-    '''
+    """
+
+    # Get best parameters depending on model and optimizer
     if optimizer == "Adam":
         if model_name == "Baseline":
             if not only_epochs:

@@ -1,18 +1,39 @@
+# -*- coding: utf-8 -*-
+"""Training functions and losses/accuracy computation on the models"""
+
 import torch
 
 
 def train_basic_model(model, train_loader, criterion, epochs, eta,
                       optim="Adam", momentum=0, nesterov=False, get_losses=False, test_loader=None):
-    
-    '''
-    Train baseline network.
-    :param model: (nn.Module) model to train
-    :param train_loader: (DataLoader) data loader to iterate over
+    """
+    Train the baseline model with the chosen criterion, eta and epochs number.
+    Eventually save and returns accuracy/losses per epoch.
+
+    :param model: model to train
+    :type model: nn.Module
+    :param train_loader: data loader to iterate over
+    :type train_loader: torch.utils.data.Dataloader
     :param criterion: loss criterion
-    :param epochs: (int) number of epochs
-    :param eta: (float) learning rate
-    '''
-    
+    :type criterion: nn.CrossEntropyLoss
+    :param epochs: number of epochs
+    :type epochs: int
+    :param eta: learning rate
+    :type eta: float
+    :param optim: optimizer to use during training (Default Adam)
+    :type optim: str
+    :param momentum: momentum value for SGD optimizer
+    :type momentum: float
+    :param nesterov: define if Nesterov algorithm should be used by SGD
+    :type nesterov: bool
+    :param get_losses: define if intermediary accuracy and losses should be computed at each epoch for train/test
+    :type get_losses: bool
+    :param test_loader: test data loader to iterate over
+    :type test_loader: torch.utils.data.Dataloader
+    :return losses, acc: losses and accuracy at each epochs, only if get_losses = True
+    """
+
+    # Create optimizer
     if optim == "SGD":
         optimizer = torch.optim.SGD(model.parameters(), lr=eta, momentum=momentum, nesterov=nesterov)
     if optim == "Adam":
@@ -22,16 +43,19 @@ def train_basic_model(model, train_loader, criterion, epochs, eta,
     acc = {"train": [], "test": []}
 
     for e in range(0, epochs):
+        # Start the traning
         loss_sum_train = 0
         for input_data, target_data, _ in iter(train_loader):
+            # Do a step over a minibatch
             output = model(input_data)
             loss = criterion(output, target_data)
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
             if get_losses:
-                with torch.no_grad(): loss_sum_train += loss
+                with torch.no_grad(): loss_sum_train += loss # Save partial loss
 
+        # Get intermediate losses and accuracy
         if get_losses:
             losses['train'].append(loss_sum_train / (len(train_loader.dataset) / train_loader.batch_size))
 
@@ -44,31 +68,17 @@ def train_basic_model(model, train_loader, criterion, epochs, eta,
         return losses, acc
 
 
-def compute_accuracy_basic(model, data_loader):
-    """
-    Compute number of errors for baseline network
-    :param model: (nn.Module) network instance
-    :param data_loader: (DataLoader) data loader to iterate over)
-    :return: (float) accuracy metric
-    """
-    tot_err = 0
-    for input_data, target_data, _ in iter(data_loader):
-        res = model(input_data)
-        for i, r in enumerate(res):
-            pred = r.max(0)[1].item()
-            if (target_data[i]) != pred:
-                tot_err += 1
-    return 1 - tot_err / (len(data_loader.dataset))
-
-
 def compute_losses_test_basic(model, test_loader, criterion):
-    '''
-    Compute average total test loss per batch
-    :param model: (nn.Module) network instance
-    :param data_loader: (DataLoader) data loader to iterate over
+    """
+    Compute average total test loss per batch for the baseline
+    :param model:network instance
+    :type model: nn.Module
+    :param test_loader: data loader to iterate over (train or test)
+    :type test_loader: torch.utils.data.Dataloader
     :param criterion: loss criterion
-    :return: (float) average total test loss metric
-    '''
+    :type criterion: nn.CrossEntropyLoss
+    :return: average total test loss metric
+    """
     with torch.no_grad():
         loss_sum_test = 0
         for input_data, target_data, _ in iter(test_loader):
@@ -81,21 +91,35 @@ def compute_losses_test_basic(model, test_loader, criterion):
 
 def train_advanced_models(model, train_loader, criterion, epochs, eta,
                           optim="Adam", momentum=0, nesterov=False, get_losses=False, test_loader=None):
-    '''
-    Train advanced networks.
-    :param model: (nn.Module) model to train
-    :param train_loader: (DataLoader) data loader to iterate over
+    """
+    Train the advanced networks (siamese or not siamese) with the chosen criterion, eta and epochs number
+    Eventually save and returns accuracy/losses per epoch.
+
+    :param model: model to train
+    :type model: nn.Module
+    :param train_loader: data loader to iterate over
+    :type train_loader: torch.utils.data.Dataloader
     :param criterion: loss criterion
-    :param epochs: (int) number of epochs
-    :param eta: (float) learning rate
-    :param optim: (string) optimizer (Adam/SGD)
-    :param momentum: (float) momentum factor
-    :param nesterov: (bool) nesterov momentum activation
-    :param get_losses: (bool) return losses for plotting
-    :param test_loader: (DataLoader) data loader for test data, if get_losses=True
-    :return: list of losses only if get_losses=True
-    '''
-    
+    :type criterion: nn.CrossEntropyLoss
+    :param epochs: number of epochs
+    :type epochs: int
+    :param eta: learning rate
+    :type eta: float
+    :param optim: optimizer to use during training (Default Adam)
+    :type optim: str
+    :param momentum: momentum value for SGD optimizer
+    :type momentum: float
+    :param nesterov: define if Nesterov algorithm should be used by SGD
+    :type nesterov: bool
+    :param get_losses: define if intermediary accuracy and losses should be computed at each epoch for train/test
+    :type get_losses: bool
+    :param test_loader: test data loader to iterate over
+    :type test_loader: torch.utils.data.Dataloader
+    :return loss0, loss1, loss_class, loss_tot, acc: auxiliaty, total loss, and accuracy at each epochs,
+    only if get_losses = True
+    """
+
+    # Define optimizer
     if optim == "SGD":
         optimizer = torch.optim.SGD(model.parameters(), lr=eta, momentum=momentum, nesterov=nesterov)
     if optim == "Adam":
@@ -113,17 +137,21 @@ def train_advanced_models(model, train_loader, criterion, epochs, eta,
         loss_sumclass_train = 0
         loss_sumtot_train = 0
 
+        # Start training
         model.train(True)
         for input_data, target_data, class_data in iter(train_loader):
             output, out_aux = model(input_data)
+            # Compute auxiliary losses
             loss_out = criterion(output, target_data)
             loss_aux0 = criterion(out_aux[0], class_data[:, 0])
             loss_aux1 = criterion(out_aux[1], class_data[:, 1])
+            # Compute total loss and do the step
             loss = loss_out + loss_aux0 + loss_aux1
             optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
+            # Save train loss per batch if required
             if get_losses:
                 with torch.no_grad():
                     loss_sum0_train += loss_aux0
@@ -131,6 +159,7 @@ def train_advanced_models(model, train_loader, criterion, epochs, eta,
                     loss_sumclass_train += loss_out
                     loss_sumtot_train += loss
 
+        # Compute auxiliary losses, accuracy at this epoch for train and test
         if get_losses:
             loss0['train'].append(loss_sum0_train / (len(train_loader.dataset) / train_loader.batch_size))
             loss1['train'].append(loss_sum1_train / (len(train_loader.dataset) / train_loader.batch_size))
@@ -153,13 +182,16 @@ def train_advanced_models(model, train_loader, criterion, epochs, eta,
 
 
 def compute_losses_test_advanced(model, test_loader, criterion):
-    '''
-    Compute average losses per batch
-    :param model: (nn.Module) model to run
-    :param test_loader: (DataLoader) data loader to iterate over
+    """
+    Compute average total test loss per batch for the advanced network
+    :param model:network instance
+    :type model: nn.Module
+    :param test_loader: data loader to iterate over (train or test)
+    :type test_loader: torch.utils.data.Dataloader
     :param criterion: loss criterion
-    :return: (tuple) average losses per batch
-    '''
+    :type criterion: nn.CrossEntropyLoss
+    :return: average total test loss metric
+    """
     with torch.no_grad():
         loss_sum0_test = 0
         loss_sum1_test = 0
@@ -185,21 +217,27 @@ def compute_losses_test_advanced(model, test_loader, criterion):
 
 def compute_accuracy(model, data_loader, model_type="Baseline"):
     """
-    Compute accuracy metric
-    :param model_type: type of network (Baseline/Siamese/NonSiamese)
-    :param model: (nn.Module) model to run
-    :param data_loader: (DataLoader) data loader to iterate over
+    Compute number of errors for a network
+    :param model:network instance
+    :type model: nn.Module
+    :param data_loader: data loader to iterate over (train or test)
+    :type data_loader: torch.utils.data.Dataloader
+    :param model_type: define if accuracy is computed on baseline or Siamese/Not Siamese
+    :type model_type: str
     :return: (float) accuracy metric
     """
     tot_err = 0
     for input_data, target_data, _ in iter(data_loader):
+        # Get output from the model
         if model_type == "Baseline":
             res = model(input_data)
         else:
             model.train(False)
             res, _ = model(input_data)
+        # Count the number of errors
         for i, r in enumerate(res):
             pred = r.max(0)[1].item()
             if (target_data[i]) != pred:
                 tot_err += 1
+    # Return accuracy
     return 1 - tot_err / (len(data_loader.dataset))

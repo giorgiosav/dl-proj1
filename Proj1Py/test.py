@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+"""Main entry point to test the networks implementation"""
+
 from helpers import *
 from validation import *
 from plot import *
@@ -5,19 +8,30 @@ import argparse
 import sys
 import time
 
+
 def test_selected_model(model_name, sgd, plots, best_params, n_runs):
-    '''
-    :param model_name: (string) name of network (Baseline/Siamese/NonSiamese)
-    :param sgd: (bool) use SGD if True, else Adam
-    :param plots: (bool) generate loss/accuracy plots
-    :param best_params: (dict) hyper parameters to use
-    :param n_runs: (int) number of times to run
-    '''
+    """
+    Test the selected model by running train/test over the defined number of runs and using selected optimizer.
+    Eventually plot loss/accuracy over epochs.
+
+    :param model_name: name of network (Baseline/Siamese/NonSiamese)
+    :type model_name: str
+    :param sgd: use SGD if True, else Adam
+    :type sgd: bool
+    :param plots: generate loss/accuracy plots
+    :type plots: bool
+    :param best_params: hyper parameters to use
+    :type best_params: dict
+    :param n_runs: number of times to run
+    :type n_runs: int
+    """
     print("Starting the train/test phase over {} runs".format(n_runs))
     if plots:
         print("\nYou chose to produce the plots. \n"
               "Model will be trained saving losses/accuracy at each epochs, this will require more time.\n"
               "For this reason, the average training time won't be computed (otherwise the estimate will be biased)\n")
+
+    # Get params and define lists to save intermediate results
     device = get_device()
     criterion = nn.CrossEntropyLoss().to(device)
     epochs = best_params["epochs"]
@@ -29,6 +43,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     train_time_acc = 0
     for i in range(0, n_runs):
         print("Run {}".format(i))
+        # Get random data and create net
         train_loader, test_loader = get_data()
         if model_name == "Baseline":
             model = BaseNet()
@@ -37,6 +52,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         else:
             model = NonSiameseNet()
         model = model.to(device)
+        # Define optimizer
         if sgd:
             optim = "SGD"
             nesterov = best_params["nesterov"]
@@ -47,17 +63,21 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             momentum = None
         print("Training model {}...".format(i))
         if plots:
+            # Train saving data later used for plots
             if model_name == "Baseline":
                 loss, acc = train_basic_model(model, train_loader, criterion, epochs, eta,
                                               optim=optim, momentum=momentum, nesterov=nesterov,
                                               get_losses=True, test_loader=test_loader)
             else:
+                # Auxiliary losses won't be plotted, they were computed
+                # only for debug/improvement purpose during developing
                 _, _, _, loss, acc = train_advanced_models(model, train_loader, criterion, epochs, eta,
                                                            optim=optim, momentum=momentum, nesterov=nesterov,
                                                            get_losses=True, test_loader=test_loader)
             loss_tot.append(loss)
             acc_tot.append(acc)
         else:
+            # Do training without saving data, compute training time
             start_time = time.time()
             if model_name == "Baseline":
                 train_basic_model(model, train_loader, criterion, epochs, eta,
@@ -69,12 +89,13 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             train_time_acc += end_time - start_time
 
         print("Training on model {} finished, computing accuracy on train and test...".format(i))
+        # Compute accuracy on train and test
         acc_train.append(compute_accuracy(model, train_loader, model_name))
-        acc_test.append(compute_accuracy(model, test_loader, model_name))        
+        acc_test.append(compute_accuracy(model, test_loader, model_name))
         del model
 
-
     if plots:
+        # Creating plots and saving them to pdf files
         print("-------------------------------------------------------")
         print("Saving requested plots for loss and accuracy")
         loss_save = "losstot_{model}_{n}runs{sgd}".format(model=model_name, n=n_runs, sgd="_sgd" if sgd else "")
@@ -82,6 +103,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         plot_over_epochs(loss_tot, epochs, "Loss", loss_save)
         plot_over_epochs(acc_tot, epochs, "Accuracy", acc_save)
 
+    # Computing mean accuracy, std and mean train time over the runs
     mean_acc_train = torch.mean(torch.Tensor(acc_train))
     mean_acc_test = torch.mean(torch.Tensor(acc_test))
     var_acc_train = torch.std(torch.Tensor(acc_train))
@@ -94,19 +116,25 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     if not plots:
         print("      -> Mean Train Time = {:.3}s".format(mean_train_time))
     print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
-    
+
     return
 
 
 def main(validation, sgd, model_name, plots, n_runs):
-    '''
-    :param validation: (bool) perform grid search for best parameters
-    :param model_name: (string) name of network (Baseline/Siamese/NonSiamese)
-    :param sgd: (bool) use SGD if True, else Adam
-    :param plots: (bool) generate loss/accuracy plots
-    :param n_runs: (int) number of times to run
-    '''
+    """
+    :param validation: perform grid search for best parameters
+    :type validation: bool
+    :param model_name: name of network (Baseline/Siamese/NonSiamese)
+    :type model_name: str
+    :param sgd: use SGD if True, else Adam
+    :type sgd: bool
+    :param plots: generate loss/accuracy plots
+    :type plots: bool
+    :param n_runs: number of times to run
+    :type n_runs: int
+    """
 
+    # If no arguments are received, print help info
     if len(sys.argv) == 1:
         print("\n-------------------------------------------------------")
         print("No arguments defined. Default best configuration used.\n"
@@ -114,9 +142,20 @@ def main(validation, sgd, model_name, plots, n_runs):
               "use the command: python test.py -h")
         print("-------------------------------------------------------")
 
+    # Print number of parameters in the chosen model
     print("\n{} model implementation".format(model_name))
+    if model_name == "Baseline":
+        model = BaseNet()
+    elif model_name == "Siamese":
+        model = SiameseNet()
+    else:
+        model = NonSiameseNet()
+    params_num = get_param_nums(model)
+    del model
+    print("Number of parameters of the model: {}".format(params_num))
     print("-------------------------------------------------------")
 
+    # Perform validation
     if validation:
         # The grid search is performed over parameters
         # we already found performing better during coarse grained validation
@@ -140,9 +179,13 @@ def main(validation, sgd, model_name, plots, n_runs):
 
     else:
         print("Loading precomputed best params")
-        best_params = get_best_params(model_name)
+        if sgd:
+            best_params = get_best_params(model_name, "SGD")
+        else:
+            best_params = get_best_params(model_name)
     print("-------------------------------------------------------")
 
+    # Run train/test over selected number of rounds
     test_selected_model(model_name, sgd, plots, best_params, n_runs)
 
 
@@ -170,7 +213,7 @@ if __name__ == '__main__':
 
     parser.add_argument('-plots', action='store_true',
                         help="Create the accuracy/loss plot over epochs for the selected model as shown in the report. "
-                            "This option deactivates printing of mean training time, as it creates overhead.")
+                             "This option deactivates printing of mean training time, as it creates overhead.")
 
     parser.add_argument('-n_runs', help='Define number of runs of the train/test process '
                                         'with the selected model (default 10)',
