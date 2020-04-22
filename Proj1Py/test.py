@@ -2,6 +2,7 @@ from helpers import *
 from validation import *
 from plot import *
 import argparse
+import sys
 
 
 def test_selected_model(model_name, sgd, plots, best_params, n_runs):
@@ -67,7 +68,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         del model
 
     if plots:
-        print("------------------------------------------")
+        print("-------------------------------------------------------")
         print("Saving requested plots for loss and accuracy")
         loss_save = "losstot_{model}_{n}runs{sgd}".format(model=model_name, n=n_runs, sgd="_sgd" if sgd else "")
         acc_save = "acc_{model}_{n}runs{sgd}".format(model=model_name, n=n_runs, sgd="_sgd" if sgd else "")
@@ -78,7 +79,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     mean_acc_test = torch.mean(torch.Tensor(acc_test))
     var_acc_train = torch.std(torch.Tensor(acc_train))
     var_acc_test = torch.std(torch.Tensor(acc_test))
-    print("------------------------------------------")
+    print("-------------------------------------------------------")
     print("Final accuracy and standard deviation on train and test:")
     print("Train -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_train, var_acc_train))
     print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
@@ -94,8 +95,16 @@ def main(validation, sgd, model_name, plots, n_runs):
     :param plots: (bool) generate loss/accuracy plots
     :param n_runs: (int) number of times to run
     '''
+
+    if len(sys.argv) == 1:
+        print("\n-------------------------------------------------------")
+        print("No arguments defined. Default best configuration used.\n"
+              "To receive help on how to set parameters \nand run different implementations\n"
+              "use the command: python test.py -h")
+        print("-------------------------------------------------------")
+
     print("\n{} model implementation".format(model_name))
-    print("------------------------------------------")
+    print("-------------------------------------------------------")
 
     if validation:
         # The grid search is performed over parameters
@@ -121,7 +130,7 @@ def main(validation, sgd, model_name, plots, n_runs):
     else:
         print("Loading precomputed best params")
         best_params = get_best_params(model_name)
-    print("------------------------------------------")
+    print("-------------------------------------------------------")
 
     test_selected_model(model_name, sgd, plots, best_params, n_runs)
 
