@@ -3,7 +3,7 @@ from validation import *
 from plot import *
 import argparse
 import sys
-
+import time
 
 def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     '''
@@ -24,6 +24,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     acc_tot = []
     acc_train = []
     acc_test = []
+    train_time_acc = 0
     for i in range(0, n_runs):
         print("Run {}".format(i))
         train_loader, test_loader = get_data()
@@ -55,17 +56,21 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
             loss_tot.append(loss)
             acc_tot.append(acc)
         else:
+            start_time = time.time()
             if model_name == "Baseline":
                 train_basic_model(model, train_loader, criterion, epochs, eta,
                                   optim=optim, momentum=momentum, nesterov=nesterov)
             else:
                 train_advanced_models(model, train_loader, criterion, epochs, eta,
                                       optim=optim, momentum=momentum, nesterov=nesterov)
+            end_time = time.time()
+            train_time_acc += end_time - start_time
 
         print("Training on model {} finished, computing accuracy on train and test...".format(i))
         acc_train.append(compute_accuracy(model, train_loader, model_name))
-        acc_test.append(compute_accuracy(model, test_loader, model_name))
+        acc_test.append(compute_accuracy(model, test_loader, model_name))        
         del model
+
 
     if plots:
         print("-------------------------------------------------------")
@@ -80,10 +85,14 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     var_acc_train = torch.std(torch.Tensor(acc_train))
     var_acc_test = torch.std(torch.Tensor(acc_test))
     print("-------------------------------------------------------")
+    mean_train_time = train_time_acc / n_runs
+    print("------------------------------------------")
     print("Final accuracy and standard deviation on train and test:")
     print("Train -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_train, var_acc_train))
+    if not plots:
+        print("      -> Mean Train Time = {:.3}s".format(mean_train_time))
     print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
-
+    
     return
 
 
@@ -158,7 +167,8 @@ if __name__ == '__main__':
                               const="NonSiamese")
 
     parser.add_argument('-plots', action='store_true',
-                        help="Create the accuracy/loss plot over epochs for the selected model as shown in the report")
+                        help="Create the accuracy/loss plot over epochs for the selected model as shown in the report. "
+                            "This option deactivates printing of mean training time, as it creates overhead.")
 
     parser.add_argument('-n_runs', help='Define number of runs of the train/test process '
                                         'with the selected model (default 10)',
