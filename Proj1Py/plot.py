@@ -3,16 +3,24 @@ import matplotlib
 import torch
 
 # Used to save in Latex design
-matplotlib.use("pgf")
-matplotlib.rcParams.update({
-    "pgf.texsystem": "pdflatex",
-    'font.family': 'serif',
-    'text.usetex': True,
-    'pgf.rcfonts': False,
-})
+
+# matplotlib.use("pgf")
+# matplotlib.rcParams.update({
+#     "pgf.texsystem": "pdflatex",
+#     'font.family': 'serif',
+#     'text.usetex': True,
+#     'pgf.rcfonts': False,
+# })
 
 
 def plot_over_epochs(values_list, epochs, label, savename):
+    '''
+    Plots values vs epochs and save figure
+    :param values_list: (list) list of values to plot
+    :param epochs: (int) number of epochs
+    :param label: (string) y axis label
+    :param savename: (string) output file name
+    '''
     mean_train = torch.mean(torch.Tensor([val['train'] for val in values_list]), 0)
     mean_test = torch.mean(torch.Tensor([val['test'] for val in values_list]), 0)
     err_up_train = torch.max(torch.Tensor([val['train'] for val in values_list]), 0)[0] - mean_train

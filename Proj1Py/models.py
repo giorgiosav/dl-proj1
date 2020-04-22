@@ -6,6 +6,9 @@ from functools import reduce
 
 
 class BaseNet(nn.Module):
+    '''
+    Baseline network
+    '''
     def __init__(self, chan1=32, chan2=64, chan3=128, nb_hidden1=50, nb_hidden2=50, nb_hidden3=25):
         super(BaseNet, self).__init__()
         self.features = nn.Sequential()

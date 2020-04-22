@@ -9,6 +9,13 @@ import argparse
 
 
 def test_selected_model(model_name, sgd, plots, best_params, n_runs):
+    '''
+    :param model_name: (string) name of network (Baseline/Siamese/NonSiamese)
+    :param sgd: (bool) use SGD if True, else Adam
+    :param plots: (bool) generate loss/accuracy plots
+    :param best_params: (dict) hyper parameters to use
+    :param n_runs: (int) number of times to run
+    '''
     print("Starting the train/test phase over {} runs".format(n_runs))
     if plots:
         print("Training model saving losses/accuracy at each epochs, this will require more time...")
@@ -84,6 +91,13 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
 
 
 def main(validation, sgd, model_name, plots, n_runs):
+    '''
+    :param validation: (bool) perform grid search for best parameters
+    :param model_name: (string) name of network (Baseline/Siamese/NonSiamese)
+    :param sgd: (bool) use SGD if True, else Adam
+    :param plots: (bool) generate loss/accuracy plots
+    :param n_runs: (int) number of times to run
+    '''
     print("\n{} model implementation".format(model_name))
     print("------------------------------------------")
 
