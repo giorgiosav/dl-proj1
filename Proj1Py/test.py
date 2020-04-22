@@ -87,7 +87,7 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     print("------------------------------------------")
     print("Final accuracy and standard deviation on train and test:")
     print("Train -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_train, var_acc_train))
-    print("      -> Mean Time = {:.3}s".format(mean_train_time))
+    if not plots: print("      -> Mean Time = {:.3}s".format(mean_train_time))
     print("Test -> Mean Accuracy = {}, Standard deviation = {}".format(mean_acc_test, var_acc_test))
     
     return
@@ -156,7 +156,8 @@ if __name__ == '__main__':
                               const="NonSiamese")
 
     parser.add_argument('-plots', action='store_true',
-                        help="Create the accuracy/loss plot over epochs for the selected model as shown in the report")
+                        help="Create the accuracy/loss plot over epochs for the selected model as shown in the report. "
+                            "This option deactivates printing of mean training time, as it creates overhead.")
 
     parser.add_argument('-n_runs', help='Define number of runs of the train/test process '
                                         'with the selected model (default 10)',
