@@ -36,7 +36,7 @@ class BaseNet(nn.Module):
 
 
 class SiameseNet(nn.Module):
-    def __init__(self, chan1=16, chan2=32, chan3=64, nb_hidden1=100, nb_hidden2=50, nb_hidden3=50, nb_hidden4=10):
+    def __init__(self, chan1=16, chan2=32, chan3=64, nb_hidden1=75, nb_hidden2=75, nb_hidden3=50, nb_hidden4=10):
         super(SiameseNet, self).__init__()
 
         self.features = nn.Sequential()
@@ -86,7 +86,7 @@ class SiameseNet(nn.Module):
 
 
 class NonSiameseNet(nn.Module):
-    def __init__(self, chan1=16, chan2=32, chan3=64, nb_hidden1=100, nb_hidden2=50, nb_hidden3=50, nb_hidden4=10):
+    def __init__(self, chan1=32, chan2=64, chan3=128, nb_hidden1=75, nb_hidden2=75, nb_hidden3=100, nb_hidden4=10):
         super(NonSiameseNet, self).__init__()
 
         self.features1 = nn.Sequential()

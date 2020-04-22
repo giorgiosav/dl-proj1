@@ -18,25 +18,25 @@ def get_best_params(model_name, optimizer="Adam", only_epochs=False):
     if optimizer == "Adam":
         if model_name == "Baseline":
             if not only_epochs:
-                return {"eta": 0.002, "chan1": 32, "chan2": 64, "chan3": 128,
+                return {"eta": 0.0025, "chan1": 32, "chan2": 64, "chan3": 128,
                         "nb_hidden1": 50, "nb_hidden2": 50, "nb_hidden3": 25,
                         "epochs": 25}
             else:
                 return 25
         if model_name == "Siamese":
             if not only_epochs:
-                return {"eta": 0.005, "chan1": 32, "chan2": 64, "chan3": 128,
-                        "nb_hidden1": 50, "nb_hidden2": 50, "nb_hidden3": 25, "nb_hidden4": 50,
-                        "epochs": 50}
+                return {"eta": 0.0025, "chan1": 64, "chan2": 128, "chan3": 256,
+                        "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 50, "nb_hidden4": 10,
+                        "epochs": 25}
             else:
-                return 50
+                return 25
         if model_name == "NonSiamese":
             if not only_epochs:
                 return {"eta": 0.005, "chan1": 32, "chan2": 64, "chan3": 128,
-                        "nb_hidden1": 50, "nb_hidden2": 50, "nb_hidden3": 25, "nb_hidden4": 50,
-                        "epochs": 50}
+                        "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 100, "nb_hidden4": 10,
+                        "epochs": 25}
             else:
-                return 50
+                return 25
     else:
         if model_name == "Baseline":
             return {"eta": 0.1, "momentum": 0.01, "nesterov": False,
@@ -44,10 +44,12 @@ def get_best_params(model_name, optimizer="Adam", only_epochs=False):
                     "nb_hidden1": 50, "nb_hidden2": 50, "nb_hidden3": 25,
                     "epochs": 25}
         if model_name == "Siamese":
-            return {"eta": 0.005, "chan1": 32, "chan2": 64, "chan3": 128,
-                    "nb_hidden1": 50, "nb_hidden2": 50, "nb_hidden3": 25, "nb_hidden4": 50,
-                    "epochs": 50}
+            return {"eta": 0.1, "momentum": 0.0001, "nesterov": False,
+                    "chan1": 64, "chan2": 128, "chan3": 256,
+                    "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 50, "nb_hidden4": 10,
+                    "epochs": 25}
         if model_name == "NonSiamese":
-            return {"eta": 0.005, "chan1": 32, "chan2": 64, "chan3": 128,
-                    "nb_hidden1": 50, "nb_hidden2": 50, "nb_hidden3": 25, "nb_hidden4": 50,
-                    "epochs": 50}
+            return {"eta": 0.1, "momentum": 0.0001, "nesterov": False,
+                    "chan1": 64, "chan2": 128, "chan3": 256,
+                    "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 100, "nb_hidden4": 10,
+                    "epochs": 25}

@@ -106,8 +106,8 @@ def train_advanced_models(model, train_loader, criterion, epochs, eta,
             loss_tot['train'].append(loss_sumtot_train / (len(train_loader.dataset) / train_loader.batch_size))
 
             with torch.no_grad():
-                acc['train'].append(compute_accuracy(model, train_loader, "Advanced"))
                 model.train(False)
+                acc['train'].append(compute_accuracy(model, train_loader, "Advanced"))
                 loss_0_test, loss_1_test, loss_class_test, loss_tot_test = \
                     compute_losses_test_advanced(model, test_loader, criterion)
                 loss0['test'].append(loss_0_test)
@@ -157,6 +157,7 @@ def compute_accuracy(model, data_loader, model_type="Baseline"):
         if model_type == "Baseline":
             res = model(input_data)
         else:
+            model.train(False)
             res, _ = model(input_data)
         for i, r in enumerate(res):
             pred = r.max(0)[1].item()

@@ -91,18 +91,23 @@ def main(validation, sgd, model_name, plots, n_runs):
         # The grid search is performed over parameters
         # we already found performing better during coarse grained validation
         if not sgd:
-            chans = [8, 16, 32, 64, 128, 256]
-            nb_hidden1 = nb_hidden2 = nb_hidden3 = nb_hidden4 = [10, 25, 50, 75, 100]
-            etas = [0.001, 0.002, 0.003, 0.004, 0.005, 0.006, 0.007, 0.008, 0.009, 0.01]
+            chans = [32, 64, 128]
+            nb_hidden1 = [75]
+            nb_hidden2 = [75]
+            nb_hidden3 = [100]
+            nb_hidden4 = [10]
+            # nb_hidden1 = nb_hidden2 = nb_hidden3 = nb_hidden4 = [10, 25, 50, 75, 100]
+            etas = [0.001, 0.0025, 0.005, 0.0075, 0.01]
+            # etas = [0.0025]
             print("Starting validation algorithm on the chosen model. "
                   "NOTE: this may require up to 10 hours for a complete run")
             if model_name == "Baseline":
                 best_params = select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3, etas)
             else:
                 best_params = select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hidden4,
-                                                         etas, model_name)
+                                                         etas, model_name, 5, 30, True)
 
-            # The best number of epochs to avoid overfitting was determined by plot analysis, so we add it manually
+            # The best number of epochs was determined by plot analysis, so we add it manually
             best_params["epochs"] = get_best_params(model_name, only_epochs=True)
         else:
             print("Validation not available for SGD optimizer, loading precomputed best params")

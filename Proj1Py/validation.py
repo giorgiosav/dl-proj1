@@ -43,6 +43,10 @@ def select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3,
                                     best_params["nb_hidden1"] = h1
                                     best_params["nb_hidden2"] = h2
                                     best_params["nb_hidden3"] = h3
+                                    if verbose:
+                                        print("New best combination: Eta = {}, chan1 = {}, chan2 = {}, chan3 = {}, "
+                                              "hidden1 = {}, hidden2 = {}, hidden3 = {}, avg_acc = {}"
+                                              .format(eta, c1, c2, c3, h1, h2, h3, acc_run))
 
     print("Best result found! Acc: {}, "
           "params: Eta = {}, chan1 = {}, "
@@ -82,8 +86,8 @@ def select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hid
                                             raise Exception("Siamese/NonSiamese selector exception")
                                         criterion = nn.CrossEntropyLoss().to(device)
                                         train_loader, test_loader = get_data()
-                                        train_basic_model(model, train_loader, criterion, epochs, eta, optim="Adam")
-                                        acc = compute_accuracy(model, test_loader)
+                                        train_advanced_models(model, train_loader, criterion, epochs, eta, optim="Adam")
+                                        acc = compute_accuracy(model, test_loader, "Advanced")
                                         tot_acc += acc
                                         del model
                                     acc_run = tot_acc / n_runs
@@ -101,6 +105,10 @@ def select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hid
                                         best_params["nb_hidden2"] = h2
                                         best_params["nb_hidden3"] = h3
                                         best_params["nb_hidden4"] = h4
+                                        if verbose:
+                                            print("New best combination: Eta = {}, chan1 = {}, chan2 = {}, chan3 = {}, "
+                                                  "hidden1 = {}, hidden2 = {}, hidden3 = {}, hidden4 = {}, avg_acc = {}"
+                                                  .format(eta, c1, c2, c3, h1, h2, h3, h4, acc_run))
 
     print("Best result found! Acc: {}, "
           "params: Eta = {}, chan1 = {}, "
