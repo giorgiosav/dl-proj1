@@ -164,7 +164,7 @@ def main(validation, sgd, model_name, plots, n_runs):
                 best_params = select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3, etas)
             else:
                 best_params = select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hidden4,
-                                                         etas, model_name, 5, 30, True)
+                                                         etas, model_name, verbose=True)
 
             # The best number of epochs was determined by plot analysis, so we add it manually
             best_params["epochs"] = get_best_params(model_name, only_epochs=True)
