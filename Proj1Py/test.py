@@ -46,11 +46,17 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
         # Get random data and create net
         train_loader, test_loader = get_data()
         if model_name == "Baseline":
-            model = BaseNet()
+            model = BaseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
+                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                            nb_hidden3=best_params["nb_hidden3"])
         elif model_name == "Siamese":
-            model = SiameseNet()
+            model = SiameseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
+                               nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                               nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
         else:
-            model = NonSiameseNet()
+            model = NonSiameseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
+                                  nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                                  nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
         model = model.to(device)
         # Define optimizer
         if sgd:
@@ -142,18 +148,7 @@ def main(validation, sgd, model_name, plots, n_runs):
               "use the command: python test.py -h")
         print("-------------------------------------------------------")
 
-    # Print number of parameters in the chosen model
-    print("\n{} model implementation".format(model_name))
-    if model_name == "Baseline":
-        model = BaseNet()
-    elif model_name == "Siamese":
-        model = SiameseNet()
-    else:
-        model = NonSiameseNet()
-    params_num = get_param_nums(model)
-    del model
-    print("Number of parameters of the model: {}".format(params_num))
-    print("-------------------------------------------------------")
+    print("{} model implementation".format(model_name))
 
     # Perform validation
     if validation:
@@ -183,6 +178,24 @@ def main(validation, sgd, model_name, plots, n_runs):
             best_params = get_best_params(model_name, "SGD")
         else:
             best_params = get_best_params(model_name)
+    print("-------------------------------------------------------")
+
+    # Print number of parameters in the chosen model
+    if model_name == "Baseline":
+        model = BaseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
+                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                            nb_hidden3=best_params["nb_hidden3"])
+    elif model_name == "Siamese":
+        model = SiameseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
+                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                            nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
+    else:
+        model = NonSiameseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
+                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                            nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
+    params_num = get_param_nums(model)
+    del model
+    print("Number of parameters of the model: {}".format(params_num))
     print("-------------------------------------------------------")
 
     # Run train/test over selected number of rounds
