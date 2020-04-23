@@ -71,7 +71,7 @@ class NonSiameseNet(nn.Module):
     Non Siamese network: auxiliary losses but no weight sharing
     """
 
-    def __init__(self, chan1=32, chan2=64, chan3=128, nb_hidden1=75, nb_hidden2=75, nb_hidden3=100, nb_hidden4=10):
+    def __init__(self, chan1=32, chan2=64, chan3=128, nb_hidden1=75, nb_hidden2=75, nb_hidden3=50, nb_hidden4=10):
         """
         :param chan1: number of channels of first convolutional layer.
         :type chan1: int
@@ -185,7 +185,7 @@ class SiameseNet(nn.Module):
     Siamese network: auxialiry losses and weight sharing used
     """
 
-    def __init__(self, chan1=16, chan2=32, chan3=64, nb_hidden1=75, nb_hidden2=75, nb_hidden3=50, nb_hidden4=10):
+    def __init__(self, chan1=64, chan2=128, chan3=256, nb_hidden1=75, nb_hidden2=75, nb_hidden3=50, nb_hidden4=10):
         """
         :param chan1: number of channels of first convolutional layer.
         :type chan1: int

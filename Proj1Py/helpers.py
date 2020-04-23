@@ -59,7 +59,7 @@ def get_best_params(model_name, optimizer="Adam", only_epochs=False):
         if model_name == "NonSiamese":
             if not only_epochs:
                 return {"eta": 0.005, "chan1": 32, "chan2": 64, "chan3": 128,
-                        "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 100, "nb_hidden4": 10,
+                        "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 50, "nb_hidden4": 10,
                         "epochs": 25}
             else:
                 return 25
@@ -76,6 +76,6 @@ def get_best_params(model_name, optimizer="Adam", only_epochs=False):
                     "epochs": 25}
         if model_name == "NonSiamese":
             return {"eta": 0.1, "momentum": 0.0001, "nesterov": False,
-                    "chan1": 64, "chan2": 128, "chan3": 256,
-                    "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 100, "nb_hidden4": 10,
+                    "chan1": 32, "chan2": 64, "chan3": 128,
+                    "nb_hidden1": 75, "nb_hidden2": 75, "nb_hidden3": 50, "nb_hidden4": 10,
                     "epochs": 25}
