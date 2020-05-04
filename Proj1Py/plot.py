@@ -17,17 +17,13 @@ import torch
 # })
 
 
-def plot_over_epochs(values_list, epochs, label, savename):
+def plot_over_epochs(values_list: list, epochs: int, label: str, savename: str):
     """
     Plots values vs epochs and save figure
-    :param values_list: dict of list to plot (keys are train and test)
-    :type values_list: dict
+    :param values_list: list of dict to plot (keys are train and test)
     :param epochs: number of epochs
-    :type epochs: int
     :param label: y axis label
-    :type label: str
     :param savename: output file name
-    :type savename: str
     """
 
     # Compute the average of the value to plot,

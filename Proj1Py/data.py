@@ -11,31 +11,27 @@ class MNISTCompareDataset(Dataset):
     """
     Convert the tensor obtained from the prologue into a Dataset, to use them into a Dataloader
     """
-    def __init__(self, input_data, target_data, classes_data):
+    def __init__(self, input_data: torch.Tensor, target_data: torch.Tensor, classes_data: torch.Tensor):
         """
         :param input_data = dataset of MNIST images
-        :type input_data: torch.Tensor
         :param target_data = dataset of MNIST images
-        :type target_data: torch.Tensor
         :param classes_data = dataset of MNIST images
-        :type classes_data: torch.Tensor
         """
         self.input_data = input_data
         self.target_data = target_data
         self.classes_data = classes_data
 
-    def __len__(self):
+    def __len__(self) -> int:
         """
         Get length
         :return: length of the dataset
         """
         return len(self.input_data)
 
-    def __getitem__(self, i):
+    def __getitem__(self, i: int) -> tuple:
         """
         Get data at position i
         :param i: index to get data, target and classes
-        :type i: int
         :return: data sample, target class, classes of each input
         """
         data = self.input_data[i, :, :, :]
@@ -44,15 +40,12 @@ class MNISTCompareDataset(Dataset):
         return data, target, classes
 
 
-def get_data(N=1000, batch_size=100, shuffle=True):
+def get_data(N: int = 1000, batch_size: int = 100, shuffle: bool = True) -> tuple:
     """
     Get train and test DataLoaders of size N
     :param N: number of pairs to return for each data loader
-    :type N: int
     :param batch_size: batch size
-    :type batch_size: int
     :param shuffle: activate random shuffling
-    :type shuffle: bool
     :return: train and test loader
     """
 

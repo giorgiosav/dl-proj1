@@ -13,20 +13,15 @@ class BaseNet(nn.Module):
     Baseline network: no auxiliary losses or weight sharing used
     """
 
-    def __init__(self, chan1=32, chan2=64, chan3=128, nb_hidden1=50, nb_hidden2=50, nb_hidden3=25):
+    def __init__(self, chan1: int = 32, chan2: int = 64, chan3: int = 128,
+                 nb_hidden1: int = 50, nb_hidden2: int = 50, nb_hidden3: int = 25):
         """
-        :param chan1: number of channels of first convolutional layer.
-        :type chan1: int
+        :param chan1: number of channels of first convolutional layer
         :param chan2: number of channels of second convolutional layer.
-        :type chan2: int
         :param chan3: number of channels of third convolutional layer.
-        :type chan3: int
         :param nb_hidden1: number of hidden units for first fully connected layer.
-        :type nb_hidden1: int
         :param nb_hidden2: number of hidden units for second fully connected layer.
-        :type nb_hidden2: int
         :param nb_hidden3: number of hidden units for third fully connected layer.
-        :type nb_hidden3: int
         """
         super(BaseNet, self).__init__()
 
@@ -51,11 +46,10 @@ class BaseNet(nn.Module):
         self.fc3 = nn.Linear(nb_hidden2, nb_hidden3)
         self.fc4 = nn.Linear(nb_hidden3, 2)
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> torch.Tensor:
         """
         Perform forward pass
         :param x: input tensor
-        :type x: Torch.Tensor
         :return x: classification on the tensor
         """
         x = self.features(x)
@@ -71,24 +65,18 @@ class NonSiameseNet(nn.Module):
     Non Siamese network: auxiliary losses but no weight sharing
     """
 
-    def __init__(self, chan1=32, chan2=64, chan3=128, nb_hidden1=75, nb_hidden2=75, nb_hidden3=50, nb_hidden4=10):
+    def __init__(self, chan1: int = 32, chan2: int = 64, chan3: int = 128,
+                 nb_hidden1: int = 75, nb_hidden2: int = 75, nb_hidden3: int = 50, nb_hidden4: int = 10):
         """
         :param chan1: number of channels of first convolutional layer.
-        :type chan1: int
         :param chan2: number of channels of second convolutional layer.
-        :type chan2: int
         :param chan3: number of channels of third convolutional layer.
-        :type chan3: int
         :param nb_hidden1: number of hidden units for first fully connected layer of first classifier
         (different for the two images)
-        :type nb_hidden1: int
         :param nb_hidden2: number of hidden units for second fully connected layer of first classifier
         (different for the two images)
-        :type nb_hidden2: int
         :param nb_hidden3: number of hidden units for first fully connected layer of second classifier
-        :type nb_hidden3: int
         :param nb_hidden4: number of hidden units for second fully connected layer of second classifier
-        :type nb_hidden4: int
         """
         super(NonSiameseNet, self).__init__()
 
@@ -154,11 +142,10 @@ class NonSiameseNet(nn.Module):
         self.classifierf.add_module("dropout_2", nn.Dropout(0.25))
         self.classifierf.add_module("linear_3", nn.Linear(nb_hidden4, 2))
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> tuple:
         """
         Perform forward pass
         :param x: input tensor
-        :type x: Torch.Tensor
         :return out: Tensor with final classification
         :return out_aux: list with the two digits classification to compute auxiliary losses
         """
@@ -185,22 +172,16 @@ class SiameseNet(nn.Module):
     Siamese network: auxialiry losses and weight sharing used
     """
 
-    def __init__(self, chan1=64, chan2=128, chan3=256, nb_hidden1=75, nb_hidden2=75, nb_hidden3=50, nb_hidden4=10):
+    def __init__(self, chan1: int = 64, chan2: int = 128, chan3: int = 256,
+                 nb_hidden1: int = 75, nb_hidden2: int = 75, nb_hidden3: int = 50, nb_hidden4: int = 10):
         """
         :param chan1: number of channels of first convolutional layer.
-        :type chan1: int
         :param chan2: number of channels of second convolutional layer.
-        :type chan2: int
         :param chan3: number of channels of third convolutional layer.
-        :type chan3: int
         :param nb_hidden1: number of hidden units for first fully connected layer of first classifier
-        :type nb_hidden1: int
         :param nb_hidden2: number of hidden units for second fully connected layer of first classifier
-        :type nb_hidden2: int
         :param nb_hidden3: number of hidden units for first fully connected layer of second classifier
-        :type nb_hidden3: int
         :param nb_hidden4: number of hidden units for second fully connected layer of second classifier
-        :type nb_hidden4: int
         """
         super(SiameseNet, self).__init__()
 
@@ -243,11 +224,10 @@ class SiameseNet(nn.Module):
         self.classifier2.add_module("dropout_2", nn.Dropout(0.25))
         self.classifier2.add_module("linear_3", nn.Linear(nb_hidden4, 2))
 
-    def forward(self, x):
+    def forward(self, x: torch.Tensor) -> tuple:
         """
         Perform forward pass
         :param x: input tensor
-        :type x: Torch.Tensor
         :return out: Tensor with final classification
         :return out_aux: list with the two digits classification to compute auxiliary losses
         """

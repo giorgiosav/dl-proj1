@@ -9,21 +9,16 @@ import sys
 import time
 
 
-def test_selected_model(model_name, sgd, plots, best_params, n_runs):
+def test_selected_model(model_name: str, sgd: bool, plots: bool, best_params: dict, n_runs: int):
     """
     Test the selected model by running train/test over the defined number of runs and using selected optimizer.
     Eventually plot loss/accuracy over epochs.
 
     :param model_name: name of network (Baseline/Siamese/NonSiamese)
-    :type model_name: str
     :param sgd: use SGD if True, else Adam
-    :type sgd: bool
     :param plots: generate loss/accuracy plots
-    :type plots: bool
     :param best_params: hyper parameters to use
-    :type best_params: dict
     :param n_runs: number of times to run
-    :type n_runs: int
     """
     print("Starting the train/test phase over {} runs".format(n_runs))
     if plots:
@@ -126,18 +121,13 @@ def test_selected_model(model_name, sgd, plots, best_params, n_runs):
     return
 
 
-def main(validation, sgd, model_name, plots, n_runs):
+def main(validation: bool, sgd: bool, model_name: str, plots: bool, n_runs: int):
     """
     :param validation: perform grid search for best parameters
-    :type validation: bool
     :param model_name: name of network (Baseline/Siamese/NonSiamese)
-    :type model_name: str
     :param sgd: use SGD if True, else Adam
-    :type sgd: bool
     :param plots: generate loss/accuracy plots
-    :type plots: bool
     :param n_runs: number of times to run
-    :type n_runs: int
     """
 
     # If no arguments are received, print help info

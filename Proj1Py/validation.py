@@ -7,29 +7,21 @@ from train import *
 from data import get_data
 
 
-def select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3,
-                           etas, n_runs=10, epochs=25, verbose=False):
+def select_best_hyper_base(chans: list, nb_hidden1: list, nb_hidden2: list, nb_hidden3: list,
+                           etas: list, n_runs: int = 10, epochs: int = 25, verbose: bool = False) -> dict:
     """
     Partial grid search over hyper-parameters for the baseline network, to find
     the best combination. This function makes sure that only combinations with
     number of channels that increase with depth are tested.
 
     :param chans:  number of channels for each convolution layer (3)
-    :type chans: list
     :param nb_hidden1: number of hidden units for 1st fully connected layer
-    :type nb_hidden1: list
     :param nb_hidden2: number of hidden units for 2nd fully connected layer
-    :type nb_hidden2: list
     :param nb_hidden3: number of hidden units for 3rd fully connected layer
-    :type nb_hidden3: list
     :param etas: eta values to test
-    :type etas: list
     :param n_runs: number of runs over which to average results
-    :type n_runs: int
     :param epochs: number of epochs
-    :type epochs: int
     :param verbose: activate verbose printing
-    :type verbose: bool
     :return: best_params, dict of best parameters found
     """
     device = get_device()
@@ -89,33 +81,24 @@ def select_best_hyper_base(chans, nb_hidden1, nb_hidden2, nb_hidden3,
     return best_params
 
 
-def select_best_hyper_advanced(chans, nb_hidden1, nb_hidden2, nb_hidden3, nb_hidden4,
-                               etas, model_sel="Siamese", n_runs=10, epochs=25, verbose=False):
+def select_best_hyper_advanced(chans: list, nb_hidden1: list, nb_hidden2: list, nb_hidden3: list, nb_hidden4: list,
+                               etas: list, model_sel: str = "Siamese",
+                               n_runs: int = 10, epochs: int = 25, verbose: bool = False) -> dict:
     """
     Partial grid search over hyper-parameters for the siamese and non-siamese networks, to find
     the best combination. This function makes sure that only combinations with
     number of channels that increase with depth are tested.
 
     :param chans:  number of channels for each convolution layer (3)
-    :type chans: list
     :param nb_hidden1: number of hidden units for 1st fully connected layer
-    :type nb_hidden1: list
     :param nb_hidden2: number of hidden units for 2nd fully connected layer
-    :type nb_hidden2: list
     :param nb_hidden3: number of hidden units for 3rd fully connected layer
-    :type nb_hidden3: list
     :param nb_hidden4: number of hidden units for 3rd fully connected layer
-    :type nb_hidden4 list
     :param etas: eta values to test
-    :type etas: list
     :param model_sel: type of model between siamese and not siamese
-    :type model_sel: str
     :param n_runs: number of runs over which to average results
-    :type n_runs: int
     :param epochs: number of epochs
-    :type epochs: int
     :param verbose: activate verbose printing
-    :type verbose: bool
     :return: best_params, dict of best parameters found
     """
 
