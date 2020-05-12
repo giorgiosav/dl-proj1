@@ -8,13 +8,13 @@ import torch
 # Used to save in LaTeX design
 # This configuration has been commented to make the implementation work in the VM.
 # The plot are reproducible even without it, but they won't have the "LaTeX style"
-matplotlib.use("pgf")
-matplotlib.rcParams.update({
-    "pgf.texsystem": "pdflatex",
-    'font.family': 'serif',
-    'text.usetex': True,
-    'pgf.rcfonts': False,
-})
+# matplotlib.use("pgf")
+# matplotlib.rcParams.update({
+#     "pgf.texsystem": "pdflatex",
+#     'font.family': 'serif',
+#     'text.usetex': True,
+#     'pgf.rcfonts': False,
+# })
 
 
 def plot_over_epochs(values_list: list, epochs: int, label: str, savename: str):
