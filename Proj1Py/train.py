@@ -2,10 +2,11 @@
 """Training functions and losses/accuracy computation on the models"""
 
 import torch
+import torch.utils.data
 
 
 def train_basic_model(model: torch.nn.Module, train_loader: torch.utils.data.DataLoader,
-                      criterion: torch.nn.CrossEntropyLoss, epochs: int, eta: int,
+                      criterion: torch.nn.CrossEntropyLoss, epochs: int, eta: float,
                       optim: str = "Adam", momentum: float = 0,
                       nesterov: bool = False, get_losses: bool = False,
                       test_loader: torch.utils.data.DataLoader = None) -> tuple:
@@ -81,7 +82,7 @@ def compute_losses_test_basic(model: torch.nn.Module, test_loader: torch.utils.d
 
 
 def train_advanced_models(model: torch.nn.Module, train_loader: torch.utils.data.DataLoader,
-                          criterion: torch.nn.CrossEntropyLoss, epochs: int, eta: int,
+                          criterion: torch.nn.CrossEntropyLoss, epochs: int, eta: float,
                           optim: str = "Adam", momentum: float = 0,
                           nesterov: bool = False, get_losses: bool = False,
                           test_loader: torch.utils.data.DataLoader = None) -> tuple:

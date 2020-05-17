@@ -7,6 +7,10 @@ from plot import *
 import argparse
 import sys
 import time
+import torch
+
+# Set manual seed for reproducibility
+torch.manual_seed(42)
 
 
 def test_selected_model(model_name: str, sgd: bool, plots: bool, best_params: dict, n_runs: int):
@@ -158,6 +162,9 @@ def main(validation: bool, sgd: bool, model_name: str, plots: bool, n_runs: int)
 
             # The best number of epochs was determined by plot analysis, so we add it manually
             best_params["epochs"] = get_best_params(model_name, only_epochs=True)
+
+            # Reset seed to have same behaviour as execution without validation in testing phase
+            torch.manual_seed(42)
         else:
             print("Validation not available for SGD optimizer, loading precomputed best params")
             best_params = get_best_params(model_name, "SGD")
@@ -173,16 +180,16 @@ def main(validation: bool, sgd: bool, model_name: str, plots: bool, n_runs: int)
     # Print number of parameters in the chosen model
     if model_name == "Baseline":
         model = BaseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
-                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
-                            nb_hidden3=best_params["nb_hidden3"])
+                        nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                        nb_hidden3=best_params["nb_hidden3"])
     elif model_name == "Siamese":
         model = SiameseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
-                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
-                            nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
+                           nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                           nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
     else:
         model = NonSiameseNet(chan1=best_params["chan1"], chan2=best_params["chan2"], chan3=best_params["chan3"],
-                            nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
-                            nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
+                              nb_hidden1=best_params["nb_hidden1"], nb_hidden2=best_params["nb_hidden2"],
+                              nb_hidden3=best_params["nb_hidden3"], nb_hidden4=best_params["nb_hidden4"])
     params_num = get_param_nums(model)
     del model
     print("Number of parameters of the model: {}".format(params_num))
