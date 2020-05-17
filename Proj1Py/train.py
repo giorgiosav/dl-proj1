@@ -61,7 +61,7 @@ def train_basic_model(model: torch.nn.Module, train_loader: torch.utils.data.Dat
         return losses, acc
 
 
-def compute_losses_test_basic(model: torch.nn.Module, test_loader: torch.utils.data.Dataloader,
+def compute_losses_test_basic(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader,
                               criterion: torch.nn.CrossEntropyLoss) -> float:
     """
     Compute average total test loss per batch for the baseline
@@ -165,7 +165,7 @@ def train_advanced_models(model: torch.nn.Module, train_loader: torch.utils.data
         return loss0, loss1, loss_class, loss_tot, acc
 
 
-def compute_losses_test_advanced(model: torch.nn.Module, test_loader: torch.utils.data.Dataloader,
+def compute_losses_test_advanced(model: torch.nn.Module, test_loader: torch.utils.data.DataLoader,
                                  criterion: torch.nn.CrossEntropyLoss):
     """
     Compute average total test loss per batch for the advanced network
@@ -197,7 +197,7 @@ def compute_losses_test_advanced(model: torch.nn.Module, test_loader: torch.util
            loss_sumtot_test / (len(test_loader.dataset) / test_loader.batch_size)
 
 
-def compute_accuracy(model: torch.nn.Module, data_loader: torch.utils.data.Dataloader,
+def compute_accuracy(model: torch.nn.Module, data_loader: torch.utils.data.DataLoader,
                      model_type: str = "Baseline") -> float:
     """
     Compute number of errors for a network
