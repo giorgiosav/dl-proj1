@@ -5,3 +5,5 @@ __pycache__
 .vscode
 *.xlsx
 *.pyc
+.ipynb_checkpoints/
+src/.idea/
